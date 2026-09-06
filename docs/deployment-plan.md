@@ -112,7 +112,7 @@ Do not put secrets or tool results on `/health`.
 
 - [ ] Create a Railway project and one **Web** service from this Git repo
 - [ ] Node 20+ (Nixpacks detects `package.json` / `engines.node`)
-- [ ] Build: `npm ci && npm run build`
+- [ ] Build: `npm run build` (Railpack/Nixpacks already installs dependencies)
 - [ ] Start: `npm run start:railway` (or the `node dist/index.js …` line above)
 - [ ] Health check path: `/health`
 - [ ] Generate a public domain (`https://<service>.up.railway.app`)
@@ -158,7 +158,7 @@ Optional `railway.toml` (add in Phase 0 if you want config-as-code):
 ```toml
 [build]
 builder = "nixpacks"
-buildCommand = "npm ci && npm run build"
+buildCommand = "npm run build"
 
 [deploy]
 startCommand = "node dist/index.js --transport http --host 0.0.0.0"
