@@ -4,7 +4,12 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { config as loadDotenv } from "dotenv";
 import { google } from "googleapis";
-import { OAUTH_SCOPES } from "../src/config/configuration.js";
+import {
+  assertExpectedGoogleAccount,
+  emailFromIdToken,
+  fetchAuthorizedEmail,
+  googleConsentUrlOptions,
+} from "../src/auth/google-account.js";
 import { AppError } from "../src/errors/app-error.js";
 
 loadDotenv({ path: ".env", override: false });
@@ -82,12 +87,15 @@ async function main(): Promise<void> {
   const redirect = new URL(redirectUri.includes("://") ? redirectUri : `http://${redirectUri}`);
   const pathname = redirect.pathname || "/";
 
+  const expectedAccount = process.env.GOOGLE_ACCOUNT_EMAIL?.trim();
   const oauth2Client = new google.auth.OAuth2(client.client_id, client.client_secret, redirectUri);
-  const authUrl = oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    prompt: "consent",
-    scope: [...OAUTH_SCOPES],
-  });
+  const authUrl = oauth2Client.generateAuthUrl(googleConsentUrlOptions(expectedAccount));
+
+  if (expectedAccount) {
+    process.stderr.write(`Sign in as ${expectedAccount} (do not use a different Chrome profile account).\n`);
+  } else {
+    process.stderr.write("Choose the Google account that should own Gmail send/draft and Docs append.\n");
+  }
 
   const code = await waitForCode(port, pathname, authUrl);
   const { tokens } = await oauth2Client.getToken(code);
@@ -97,6 +105,16 @@ async function main(): Promise<void> {
       "AUTHENTICATION_FAILED",
       "Google did not return a refresh token. Revoke the app at https://myaccount.google.com/permissions and retry.",
     );
+  }
+
+  oauth2Client.setCredentials(tokens);
+  const authorizedEmail =
+    emailFromIdToken(tokens.id_token) || (await fetchAuthorizedEmail(oauth2Client));
+  if (expectedAccount) {
+    assertExpectedGoogleAccount(authorizedEmail, expectedAccount);
+  }
+  if (authorizedEmail) {
+    process.stdout.write(`Authorized Google account: ${authorizedEmail}\n`);
   }
 
   writeTokenFile(tokens as Record<string, unknown>);

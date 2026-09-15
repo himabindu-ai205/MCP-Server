@@ -5,7 +5,8 @@ import type { LogLevel } from "../utils/logger.js";
 
 export const GMAIL_COMPOSE_SCOPE = "https://www.googleapis.com/auth/gmail.compose";
 export const DOCS_SCOPE = "https://www.googleapis.com/auth/documents";
-export const OAUTH_SCOPES = [GMAIL_COMPOSE_SCOPE, DOCS_SCOPE] as const;
+export const USERINFO_EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
+export const OAUTH_SCOPES = [GMAIL_COMPOSE_SCOPE, DOCS_SCOPE, USERINFO_EMAIL_SCOPE] as const;
 
 export const DEFAULT_HTTP_PATH = "/mcp";
 export const DEFAULT_HTTP_PORT = 8787;
@@ -18,6 +19,7 @@ export interface AppConfig {
   googleClientSecret: string;
   googleRedirectUri: string;
   googleRefreshToken: string;
+  googleAccountEmail?: string;
   logLevel: LogLevel;
   httpHost: string;
   httpPort: number;
@@ -125,6 +127,7 @@ export function loadConfig(options: LoadConfigOptions = {}): AppConfig {
     googleClientSecret,
     googleRedirectUri,
     googleRefreshToken,
+    googleAccountEmail: env.GOOGLE_ACCOUNT_EMAIL?.trim() || undefined,
     logLevel,
     httpHost,
     httpPort: resolveHttpPort(env),

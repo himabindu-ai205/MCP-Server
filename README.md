@@ -89,6 +89,7 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 GOOGLE_REDIRECT_URI=http://localhost:3000/oauth2callback
 GOOGLE_REFRESH_TOKEN=
+GOOGLE_ACCOUNT_EMAIL=himabindu.a26@gmail.com
 LOG_LEVEL=info
 ```
 
@@ -101,7 +102,7 @@ npm install
 npm run auth
 ```
 
-The script opens a browser, requests consent, and prints `GOOGLE_REFRESH_TOKEN`. Paste it into `.env` or your host secret store.
+The script opens a browser and asks you to **choose a Google account**. Pick `GOOGLE_ACCOUNT_EMAIL` (default `himabindu.a26@gmail.com`). Chrome’s currently signed-in profile is not used as From unless you select that account. The refresh token is written to `.env` / `token.json`.
 
 ## Install and build
 
@@ -144,26 +145,36 @@ Railway injects `PORT`. The process binds `0.0.0.0`, serves `GET /health`, and r
 
 ### Cursor
 
-Add to `.cursor/mcp.json` or Cursor MCP settings:
+Add to `.cursor/mcp.json` (this repo) or Cursor MCP settings. Cursor will start the local server over stdio and load `.env` automatically:
 
 ```json
 {
   "mcpServers": {
     "google-workspace": {
       "command": "node",
-      "args": ["dist/index.js"],
-      "env": {
-        "GOOGLE_CLIENT_ID": "<secret>",
-        "GOOGLE_CLIENT_SECRET": "<secret>",
-        "GOOGLE_REDIRECT_URI": "http://localhost:3000/oauth2callback",
-        "GOOGLE_REFRESH_TOKEN": "<secret>"
-      }
+      "args": ["${workspaceFolder}/dist/index.js"],
+      "envFile": "${workspaceFolder}/.env"
     }
   }
 }
 ```
 
-Use an absolute path to `dist/index.js` if the workspace root is not the server directory.
+Run `npm run build` first. In chat, ask the agent to use the **google-workspace** `send_email` tool — do not open Gmail in the browser.
+
+To use the Railway HTTP endpoint instead:
+
+```json
+{
+  "mcpServers": {
+    "google-workspace": {
+      "url": "https://mcp-server-production-f0ca.up.railway.app/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:MCP_HTTP_TOKEN}"
+      }
+    }
+  }
+}
+```
 
 ### Claude Desktop
 
@@ -234,6 +245,7 @@ Unit tests mock Gmail and Docs clients. They do not need network access or real 
 | --- | --- |
 | Server exits on startup | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, and `GOOGLE_REFRESH_TOKEN` must be set. |
 | `AUTHENTICATION_FAILED` | Re-run `npm run auth`. Confirm APIs are enabled and the OAuth client redirect URI matches. |
+| Mail sent from the wrong Gmail | The From address is the account that clicked Allow, not Chrome’s default profile. Set `GOOGLE_ACCOUNT_EMAIL`, run `npm run auth`, and choose that account. Update Railway `GOOGLE_REFRESH_TOKEN`. |
 | No refresh token from `auth` | Revoke the app at https://myaccount.google.com/permissions and consent again. |
 | `DOCUMENT_NOT_FOUND` | The Doc id is wrong, or the authorized account cannot access that document. |
 | `INVALID_EMAIL` | One of `to` / `cc` / `bcc` is not a valid address. |

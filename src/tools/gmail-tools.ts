@@ -14,10 +14,10 @@ export const emailToolInputShape = {
 };
 
 export const CREATE_EMAIL_DRAFT_DESCRIPTION =
-  "Create a Gmail draft without sending it. Use this when the user wants to review or edit the message first. Requires to, subject, and body. Supports optional cc, bcc, htmlBody, threadId, and inReplyTo.";
+  "Create a Gmail draft without sending it. The From address is the Google account that authorized this server (GOOGLE_ACCOUNT_EMAIL), not Chrome's signed-in user and not the To recipient. Use this when the user wants to review or edit the message first. Requires to, subject, and body. Supports optional cc, bcc, htmlBody, threadId, and inReplyTo.";
 
 export const SEND_EMAIL_DESCRIPTION =
-  "Send an email immediately through Gmail. Use this only when the user wants the message delivered now, not saved as a draft. Requires to, subject, and body. Supports optional cc, bcc, htmlBody, threadId, and inReplyTo.";
+  "Send an email immediately through Gmail as the Google account that authorized this server (GOOGLE_ACCOUNT_EMAIL), not Chrome's signed-in user. Use this only when the user wants the message delivered now, not saved as a draft. Requires to, subject, and body. Supports optional cc, bcc, htmlBody, threadId, and inReplyTo.";
 
 export async function runCreateEmailDraft(
   service: GmailService,

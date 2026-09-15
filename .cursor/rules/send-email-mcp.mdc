@@ -1,0 +1,6 @@
+---
+description: Send mail through the google-workspace MCP send_email tool
+alwaysApply: true
+---
+
+When the user wants to send or draft email, use the **google-workspace** MCP tools `send_email` or `create_email_draft`. Do not open Gmail in the browser, `mail.google.com/?view=cm`, or `mailto:` links. The From address is `himabindu.a26@gmail.com` from the server OAuth token.
