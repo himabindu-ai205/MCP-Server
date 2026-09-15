@@ -724,15 +724,10 @@ Hosts differ in config file shape; the contract is command + args + env.
 ```json
 {
   "mcpServers": {
-    "google-workspace": {
+    "gmail": {
       "command": "node",
       "args": ["dist/index.js"],
-      "env": {
-        "GOOGLE_CLIENT_ID": "<from-host-secret-store>",
-        "GOOGLE_CLIENT_SECRET": "<from-host-secret-store>",
-        "GOOGLE_REDIRECT_URI": "http://localhost:3000/oauth2callback",
-        "GOOGLE_REFRESH_TOKEN": "<from-host-secret-store>"
-      }
+      "envFile": ".env"
     }
   }
 }

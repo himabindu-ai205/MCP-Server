@@ -145,12 +145,12 @@ Railway injects `PORT`. The process binds `0.0.0.0`, serves `GET /health`, and r
 
 ### Cursor
 
-Add to `.cursor/mcp.json` (this repo) or Cursor MCP settings. Cursor will start the local server over stdio and load `.env` automatically:
+Add to `.cursor/mcp.json` (this repo) or Cursor MCP settings. Use **stdio** (a local `command`), not a `url`. A `url` entry makes Cursor show Google sign-in. Stdio loads `.env` and sends with the refresh token — no browser login.
 
 ```json
 {
   "mcpServers": {
-    "google-workspace": {
+    "gmail": {
       "command": "node",
       "args": ["${workspaceFolder}/dist/index.js"],
       "envFile": "${workspaceFolder}/.env"
@@ -159,26 +159,11 @@ Add to `.cursor/mcp.json` (this repo) or Cursor MCP settings. Cursor will start 
 }
 ```
 
-Run `npm run build` first. In chat, ask the agent to use the **google-workspace** `send_email` tool — do not open Gmail in the browser.
-
-To use the Railway HTTP endpoint instead:
-
-```json
-{
-  "mcpServers": {
-    "google-workspace": {
-      "url": "https://mcp-server-production-f0ca.up.railway.app/mcp",
-      "headers": {
-        "Authorization": "Bearer ${env:MCP_HTTP_TOKEN}"
-      }
-    }
-  }
-}
-```
+Run `npm run build` first. Enable **gmail** in Settings → MCP. In chat, use the **gmail** `send_email` tool. Do not click Authenticate and do not open Gmail in the browser.
 
 ### Claude Desktop
 
-Same JSON shape in `claude_desktop_config.json` (`mcpServers.google-workspace`).
+Same JSON shape in `claude_desktop_config.json` (`mcpServers.gmail`).
 
 ### Custom agents
 

@@ -17,7 +17,7 @@ import {
   runAppendToGoogleDoc,
 } from "../tools/google-docs-tools.js";
 
-export const SERVER_NAME = "google-workspace";
+export const SERVER_NAME = "gmail";
 export const SERVER_VERSION = "1.0.0";
 
 export const TOOL_NAMES = ["create_email_draft", "send_email", "append_to_google_doc"] as const;

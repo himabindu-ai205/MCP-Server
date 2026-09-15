@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "google-workspace": {
+    "gmail": {
       "command": "node",
       "args": ["${workspaceFolder}/dist/index.js"],
       "envFile": "${workspaceFolder}/.env"

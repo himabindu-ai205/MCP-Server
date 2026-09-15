@@ -89,7 +89,7 @@ node dist/index.js --transport http --host 0.0.0.0 --port ${PORT:-8080}
 Suggested health response:
 
 ```json
-{ "status": "ok", "server": "google-workspace", "transport": "http" }
+{ "status": "ok", "server": "gmail", "transport": "http" }
 ```
 
 Do not put secrets or tool results on `/health`.
@@ -258,7 +258,7 @@ If the Cursor build supports a URL MCP server:
 ```json
 {
   "mcpServers": {
-    "google-workspace": {
+    "gmail": {
       "url": "https://<service>.up.railway.app/mcp",
       "headers": {
         "Authorization": "Bearer <MCP_HTTP_TOKEN>"
